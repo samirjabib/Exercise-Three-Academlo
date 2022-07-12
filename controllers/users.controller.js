@@ -27,14 +27,19 @@ const createUser = catchAsync(async (req, res, next) => {
 		name,
 		email,
 		password: hashPassword,
+
+        
 	});
 
-	// Remove password from response
-	newUser.password = undefined;
+    // Remove password from response
+	newUser.password= undefined;
 
 	res.status(201).json({
 		status: 'success',
 		newUser,
+
+
+        
 	});
 });
 
@@ -77,19 +82,26 @@ const login = catchAsync(( async (req,res,next) => {
 
 const getUsersActive = catchAsync( async(req,res,next) => {
 
+
+
     const users = await User.findAll({
         where:{
-            email,
             status:'active',
-        },
+        
+        }
     });
+
+    console.log(users.password)
+
     res.status(200).json({
-        status:'success',
-        users,
+        status:"success",
+        users
     })
 });
 
 const updateUser = catchAsync( async(req,res,next) => {
+
+
     const { user } = req ;
     const { name , email } = req.body;
 
@@ -98,12 +110,14 @@ const updateUser = catchAsync( async(req,res,next) => {
     res.status(204).json({ status: 'success' });
 });
 
-const desactiveUser = catchAsync( async(req,res,next) => {
+const deleteUser = catchAsync( async(req,res,next) => {
+
     const { user } = req;
 
-    await user.update({ status: 'desactived'});
+	// await user.destroy();
+	await user.update({ status: 'deleted' });
 
-    res.status(204).json({ status:'success'});
+	res.status(204).json({ status: 'success' });
 });
 
 
@@ -111,7 +125,7 @@ module.exports = {
     createUser,
     login,
     getUsersActive,
-    desactiveUser,
+    deleteUser,
     updateUser,
 };
 

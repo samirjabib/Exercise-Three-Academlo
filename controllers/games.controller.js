@@ -13,7 +13,7 @@ const createGame = catchAsync(async (req, res, next) => {
 
 	const { title, gender } = req.body;
 
-	const newGame = await User.create({
+	const newGame = await Game.create({
         title,
         gender,
 	});
