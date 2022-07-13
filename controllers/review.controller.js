@@ -1,7 +1,5 @@
 //Models 
 
-const { Review } = require('../models/review.model');
-
 
 //Utils
 

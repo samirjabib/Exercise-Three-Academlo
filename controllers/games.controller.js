@@ -3,10 +3,12 @@
 
 //Models
 const { Game } = require('../models/game.model');
+const { Console } = require('../models/console.model');
+const { Review } = require('../models/review.model');
 
 //Utils
 const { catchAsync } = require('../utils/catchAsync.util');
-
+const { protectSession } = require('../middleware/auth.middleware');
 
 
 const createGame = catchAsync(async (req, res, next) => {
@@ -28,12 +30,18 @@ const createGame = catchAsync(async (req, res, next) => {
 
 const getAllGames = catchAsync(async(req, res, next) => {
 
-    const games = await Game.findAll();
+    const games = await Game.findAll({
+        attributes:["title","gender", "id"],
+        where:{ status: 'active'},
+        include: { model: Console, attributes:[ "name", "company"]},
+        include:{model: {Review}, attributes:["comment"]},
+    });
 
     res.status(200).json({
         status:'success',
         games
     })
+
 });
 
 
@@ -49,13 +57,33 @@ const updateGame = catchAsync(async (res, req, next) => {
 const desactiveGame = catchAsync(async (res, req, next) => {
     const { game } = req;
 
+    console.log(game)
     await game.update({ status: 'desactived'});
 
     res.status(204).json ({ status:'success'});
 })
 
-const gameReview = catchAsync(async (res, req, next) => {
-    //Logic for create gameReview
+const makeReview = catchAsync(async (res, req, next) => {
+    
+    const { comment } = req
+
+    const { gameId } = req.params;
+
+    const { user } = req;
+    
+
+    const newReview = await Review.create({
+        comment,
+        gameId,
+        userId: user.id
+    })
+
+
+    res.status(200).json({
+        status:"success",
+        newReview
+    })
+
 })
 
 module.exports = {
@@ -63,5 +91,5 @@ module.exports = {
     getAllGames,
     updateGame,
     desactiveGame,
-    gameReview,
+    makeReview,
 }

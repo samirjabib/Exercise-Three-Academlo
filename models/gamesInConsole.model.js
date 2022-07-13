@@ -18,10 +18,6 @@ const gamesInConsole = db.define('gamesInConsole', {
 		type: DataTypes.INTEGER,
 		allowNull: false,
 	},
-    comment: {
-		type: DataTypes.STRING,
-		allowNull: false,
-	},
 	status: {
 		type: DataTypes.STRING,
 		allowNull: false,

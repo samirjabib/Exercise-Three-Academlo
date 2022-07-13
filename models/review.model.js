@@ -19,7 +19,6 @@ const Review = db.define('review', {
 		allowNull: false,
 	},
 	
-	
     comment: {
 		type: DataTypes.STRING,
 		allowNull: false,
